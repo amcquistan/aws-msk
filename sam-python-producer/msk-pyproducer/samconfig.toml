@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "msk-pyproducer"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-zez2v5ke4nzp"
+s3_prefix = "msk-pyproducer"
+region = "us-east-2"
+profile = "ambassador"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "MskBootstrapServers=\"b-2.msk-dev01-cluster.gqy2m7.c2.kafka.us-east-2.amazonaws.com:9092\" MskTopic=\"adam\" MskVpcSecurityGroupId=\"sg-06d6ccb5af11de7e7\" MskVpcSubnet1Id=\"subnet-0b2416d8234f9fbe4\" MskVpcSubnet2Id=\"subnet-082476d3eea32e670\" MskVpcSubnet3Id=\"subnet-0d1ac66c10d9eb62e\""

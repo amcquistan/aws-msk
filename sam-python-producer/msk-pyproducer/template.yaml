@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  msk-pyproducer
+
+  Sample SAM Template for msk-pyproducer
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+
+Parameters:
+  MskBootstrapServers:
+    Type: String
+    Description: These are the client connection MSK Kafka Bootstrap Server urls
+  MskTopic:
+    Type: String
+  MskVpcSecurityGroupId:
+    Type: String
+    Description: The MSK / MSK VPC Security Group allowing communication to the Cluster
+  MskVpcSubnet1Id:
+    Type: String
+  MskVpcSubnet2Id:
+    Type: String
+  MskVpcSubnet3Id:
+    Type: String
+
+Resources:
+  MskPyProducerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: rest_api/
+      Handler: app.app
+      Runtime: python3.8
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref MskVpcSecurityGroupId
+        SubnetIds:
+          - !Ref MskVpcSubnet1Id
+          - !Ref MskVpcSubnet2Id
+          - !Ref MskVpcSubnet3Id
+      Environment:
+        Variables:
+          MSK_BOOTSTRAP_SERVERS: !Ref MskBootstrapServers
+          MSK_TOPIC: !Ref MskTopic
+      Policies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Events:
+        PublishMessage:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /send-message/
+            Method: post
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  MskPyProducerApi:
+    Description: "API Gateway endpoint URL for Prod stage for MSK Producer function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/send-message/"
+  MskPyProducerFunction:
+    Description: "MSK Producer Lambda Function ARN"
+    Value: !GetAtt MskPyProducerFunction.Arn
+  MskPyProducerFunctionIamRole:
+    Description: "Implicit IAM Role created for MSK Producer function"
+    Value: !GetAtt MskPyProducerFunctionRole.Arn
