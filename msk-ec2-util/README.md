@@ -83,9 +83,8 @@ To install the Python based kafka-client library pip install the package like so
 pip3 install kafka-python
 ```
 
+See the following for producing and consuming to/from cluster
 
-__Consuming From Python__
-
-
-__Producing From Python__
+* py_producer.py
+* py_consumer.py
 
