@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  msk-pyconsumer
+
+  Sample SAM Template for msk-pyconsumer which consumes AWS MSK Events
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Parameters:
+  MSKArn:
+    Type: String
+    Description: AWS MSK Cluster ARN
+  MSKTopic:
+    Type: String
+    Description: AWS MSK Topic to Consumer from
+
+Resources:
+  MskPyConsumerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: msk_consumer/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Policies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaMSKExecutionRole
+      Events:
+        MSKEvent:
+          Type: MSK
+          Properties:
+            StartingPosition: LATEST
+            Stream: !Ref MSKArn
+            Topics:
+              - !Ref MSKTopic
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  MskPyConsumerFunction:
+    Description: "MSK Python Lambda Consumer ARN"
+    Value: !GetAtt MskPyConsumerFunction.Arn
+  MskPyConsumerFunctionIamRole:
+    Description: "Implicit IAM Role created for MSK Python Lambda Consumer function"
+    Value: !GetAtt MskPyConsumerFunctionRole.Arn
