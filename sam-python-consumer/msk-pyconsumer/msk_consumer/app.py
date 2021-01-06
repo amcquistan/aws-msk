@@ -1,51 +1,19 @@
-import json
+
+import base64
+import logging
 
 # import requests
-
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
-    print(json.dumps(event, indent=4))
+    logger.info('The function has been invoked')
 
     records = event.get('records', {})
 
-    for key in records.items():
-        print('Received key ' + key)
-
-        value = event
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }
+    for topic_partition, messages in records.items():
+        logger.info('Processing topic partition ' + topic_partition)
+        for message in messages:
+            logger.info('Received message: ' + str(message))
+            decoded_value = base64.b64decode(message['value'].encode('utf-8')).decode('utf-8')
+            logger.info('Decoded message value: ' + decoded_value)

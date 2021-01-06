@@ -2,9 +2,9 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "msk-pyproducer"
+stack_name = "msk-pyconsumer"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-zez2v5ke4nzp"
-s3_prefix = "msk-pyproducer"
+s3_prefix = "msk-pyconsumer"
 region = "us-east-2"
 profile = "ambassador"
 confirm_changeset = true
