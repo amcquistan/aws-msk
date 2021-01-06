@@ -21,10 +21,13 @@ Parameters:
     Description: The MSK / MSK VPC Security Group allowing communication to the Cluster
   MskVpcSubnet1Id:
     Type: String
+    Description: This must be a public subnet because the REST endpoint needs to be accessible to the public
   MskVpcSubnet2Id:
     Type: String
-  MskVpcSubnet3Id:
-    Type: String
+    Description: This must be a public subnet because the REST endpoint needs to be accessible to the public
+  # MskVpcSubnet3Id:
+  #   Type: String
+  #   Description: This must be a public subnet because the REST endpoint needs to be accessible to the public
 
 Resources:
   MskPyProducerFunction:
@@ -39,12 +42,13 @@ Resources:
         SubnetIds:
           - !Ref MskVpcSubnet1Id
           - !Ref MskVpcSubnet2Id
-          - !Ref MskVpcSubnet3Id
+          # - !Ref MskVpcSubnet3Id
       Environment:
         Variables:
           MSK_BOOTSTRAP_SERVERS: !Ref MskBootstrapServers
           MSK_TOPIC: !Ref MskTopic
       Policies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaMSKExecutionRole
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
       Events:
         PublishMessage:

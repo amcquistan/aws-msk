@@ -37,7 +37,7 @@ def lambda_handler(event, context):
 
     records = event.get('records', {})
 
-    for key in :
+    for key in records.items():
         print('Received key ' + key)
 
         value = event

@@ -17,6 +17,18 @@ Parameters:
   MSKTopic:
     Type: String
     Description: AWS MSK Topic to Consumer from
+  MskVpcSecurityGroupId:
+    Type: String
+    Description: The MSK / MSK VPC Security Group allowing communication to the Cluster
+  MskVpcSubnet1Id:
+    Type: String
+    Description: This must be in the private subnet containing the Kafka broker and a NAT
+  MskVpcSubnet2Id:
+    Type: String
+    Description: This must be in the private subnet containing the Kafka broker and a NAT
+  # MskVpcSubnet3Id:
+  #   Type: String
+  #   Description: This must be in the private subnet containing the Kafka broker and a NAT
 
 Resources:
   MskPyConsumerFunction:
@@ -25,8 +37,16 @@ Resources:
       CodeUri: msk_consumer/
       Handler: app.lambda_handler
       Runtime: python3.8
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref MskVpcSecurityGroupId
+        SubnetIds:
+          - !Ref MskVpcSubnet1Id
+          - !Ref MskVpcSubnet2Id
+          # - !Ref MskVpcSubnet3Id
       Policies:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaMSKExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
       Events:
         MSKEvent:
           Type: MSK

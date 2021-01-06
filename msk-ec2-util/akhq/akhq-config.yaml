@@ -1,0 +1,18 @@
+akhq:
+  security:
+    enabled: true
+    default-group: no-roles
+    basic-auth:
+      - username: admin
+        password: "0a3bb48939cce8ada956a93fd336429c63154e28e057381be6484a6d927cb424"
+        passwordHash: SHA256
+        groups:
+          - admin
+  connections:
+    msk-cluster:
+      properties:
+        bootstrap.servers: "b-2.msk-dev01-cluster4.kq7cyd.c2.kafka.us-east-2.amazonaws.com:9092,b-1.msk-dev01-cluster4.kq7cyd.c2.kafka.us-east-2.amazonaws.com:9092"
+      # schema-registry:
+        # url: "http://<>"
+      # connect:
+        # url: "http://<>"

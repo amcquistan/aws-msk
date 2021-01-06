@@ -1,0 +1,13 @@
+[Unit]
+Description=Manage Kafka Cluster using akhq.io
+
+[Service]
+WorkingDirectory=/home/ec2-user
+ExecStart=/bin/java -Dmicronaut.config.files=/home/ec2-user/akhq-config.yaml -jar akhq.jar
+User=ec2-user
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
